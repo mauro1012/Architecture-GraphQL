@@ -1,4 +1,5 @@
-const { createServer } = require('@graphql-yoga/node');
+import { createYoga } from 'graphql-yoga';
+import { createServer } from 'http';
 
 // Define el esquema
 const typeDefs = `
@@ -14,7 +15,7 @@ const typeDefs = `
   }
 `;
 
-// Datos simulados 
+// Datos simulados
 const users = [
   { id: "1", name: "Juan", age: 25 },
   { id: "2", name: "Ana", age: 30 },
@@ -24,19 +25,21 @@ const users = [
 const resolvers = {
   Query: {
     hello: () => "¡Hola, mundo!",
-    user: (_, { id }) => users.find(user => user.id === id),
+    user: (_, { id }) => users.find((user) => user.id === id),
   },
 };
 
-// Crear el servidor GraphQL
-const server = createServer({
+// Configura GraphQL Yoga
+const yoga = createYoga({
   schema: {
     typeDefs,
     resolvers,
   },
 });
 
-// Inicia el servidor
-server.start(() => {
-  console.log("Servidor GraphQL ejecutándose en http://localhost:4000");
+// Crea y ejecuta el servidor HTTP
+const server = createServer(yoga);
+
+server.listen(4000, () => {
+  console.log('Servidor GraphQL ejecutándose en http://localhost:4000');
 });
