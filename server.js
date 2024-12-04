@@ -1,7 +1,7 @@
-import { createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
+import { createYoga } from 'graphql-yoga';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 
-// Define el esquema
 const typeDefs = `
   type Query {
     hello: String
@@ -15,13 +15,12 @@ const typeDefs = `
   }
 `;
 
-// Datos simulados
 const users = [
-  { id: "1", name: "Juan", age: 25 },
+  { id: "1", name: "Juan", age: 26 },
   { id: "2", name: "Ana", age: 30 },
+  { id: "3", name: "Mauro", age: 22}
 ];
 
-// Define los resolvers
 const resolvers = {
   Query: {
     hello: () => "¡Hola, mundo!",
@@ -29,15 +28,10 @@ const resolvers = {
   },
 };
 
-// Configura GraphQL Yoga
-const yoga = createYoga({
-  schema: {
-    typeDefs,
-    resolvers,
-  },
-});
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-// Crea y ejecuta el servidor HTTP
+const yoga = createYoga({ schema });
+
 const server = createServer(yoga);
 
 server.listen(4000, () => {
